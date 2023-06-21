@@ -53,32 +53,31 @@ class MainActivity : ComponentActivity() {
             if (canEnableBluetooth && !isBluetoothEnabled) {
                 enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
             }
-
         }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                )
+            )
+        }
+
 
         setContent {
             MyBluetoothChatAppTheme {
                 val viewModel = hiltViewModel<BluetoothViewModel>()
                 val state by viewModel.state.collectAsState()
 
-                LaunchedEffect(true) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        permissionLauncher.launch(
-                            arrayOf(
-                                Manifest.permission.BLUETOOTH_SCAN,
-                                Manifest.permission.BLUETOOTH_CONNECT
-                            )
-                        )
-                    }
-                }
-
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
                     DeviceScreen(
                         state = state,
-                        onStartScan = {},
-                        onStopScan = {}
+                        onStartScan = {viewModel.startScan()},
+                        onStopScan = {viewModel.stopScan()}
                     )
                 }
             }
