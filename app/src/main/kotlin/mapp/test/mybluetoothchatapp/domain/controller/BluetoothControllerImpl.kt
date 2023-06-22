@@ -67,6 +67,10 @@ class BluetoothControllerImpl(private val context: Context) : BluetoothControlle
 
     }
 
+    override fun startBluetoothServer() {
+
+    }
+
     override fun release() {
         context.unregisterReceiver(foundDeviceReceiver)
     }
