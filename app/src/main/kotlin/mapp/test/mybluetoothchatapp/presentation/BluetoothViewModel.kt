@@ -64,7 +64,7 @@ class BluetoothViewModel @Inject constructor(
     }
 
     fun waitForIncomingDeviceConnection() {
-        _state.update { it.copy(isConnected = true) }
+        _state.update { it.copy(isConnecting = true) }
         deviceConnectionJob = bluetoothController
             .startBluetoothServer()
             .listen()
