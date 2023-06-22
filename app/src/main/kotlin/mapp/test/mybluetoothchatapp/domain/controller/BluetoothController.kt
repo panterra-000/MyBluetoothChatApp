@@ -9,7 +9,7 @@ interface BluetoothController {
 
     fun startDiscovery()
     fun stopDiscovery()
-
+    fun startBluetoothServer()
     fun release()
 
 }

@@ -65,7 +65,6 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-
         setContent {
             MyBluetoothChatAppTheme {
                 val viewModel = hiltViewModel<BluetoothViewModel>()

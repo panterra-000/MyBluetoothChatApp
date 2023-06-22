@@ -33,16 +33,15 @@ class BluetoothControllerImpl(private val context: Context) : BluetoothControlle
     override val pairedDevices: StateFlow<List<BluetoothDeviceDomain>>
         get() = _pairedDevices.asStateFlow()
 
+    init {
+        updatePairedDevices()
+    }
 
     private val foundDeviceReceiver = FoundDeviceReceiver { device ->
         _scannedDevices.update { devices ->
             val newDevice = device.toBluetoothDeviceDomain()
             if (newDevice in devices) devices else devices + newDevice
         }
-    }
-
-    init {
-        updatePairedDevices()
     }
 
     override fun startDiscovery() {
