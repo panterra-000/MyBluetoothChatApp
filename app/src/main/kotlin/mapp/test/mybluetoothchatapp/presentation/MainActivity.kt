@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import mapp.test.mybluetoothchatapp.ui.theme.MyBluetoothChatAppTheme
+import mapp.test.mybluetoothchatapp.util.showToast
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -70,14 +71,36 @@ class MainActivity : ComponentActivity() {
                 val viewModel = hiltViewModel<BluetoothViewModel>()
                 val state by viewModel.state.collectAsState()
 
+                LaunchedEffect(key1 = state.errorMessage, block = {
+                    state.errorMessage?.let { errorMessage ->
+                        showToast(errorMessage)
+                    }
+                })
+
+                LaunchedEffect(key1 = state.isConnected, block = {
+                    if (state.isConnected) {
+                        showToast("You are connected.")
+                    }
+                })
+
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    DeviceScreen(
-                        state = state,
-                        onStartScan = {viewModel.startScan()},
-                        onStopScan = {viewModel.stopScan()}
-                    )
+                    when {
+                        state.isConnecting -> {
+                            ConnectingView()
+                        }
+
+                        else -> {
+                            DeviceScreen(
+                                state = state,
+                                onStartScan = viewModel::startScan,
+                                onStopScan = viewModel::stopScan,
+                                onClickDevice = viewModel::connectToDevice,
+                                onStartServer = viewModel::waitForIncomingDeviceConnection,
+                            )
+                        }
+                    }
                 }
             }
         }
